@@ -9,8 +9,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
 from flask import make_response
-from xhtml2pdf import pisa
-from io import BytesIO
+
 
 
 import os
@@ -36,7 +35,7 @@ import bcrypt
 from flask import Flask, render_template, request, redirect, url_for
 import google.generativeai as genai
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = genai.GenerativeModel("gemini-3.6-flash")
+model = genai.GenerativeModel("gemini-.5-flash")
 
 
 app = Flask(__name__)
@@ -574,31 +573,6 @@ def download_resume_pdf():
     return send_file(pdf_file, as_attachment=True)
 
 
-
-@app.route("/download-resume", methods=["POST"])
-def download_resume_pdf_():
-
-    html = render_template(
-        "resume_preview.html",
-        name=request.form.get("name"),
-        email=request.form.get("email"),
-        phone=request.form.get("phone"),
-        summary=request.form.get("summary"),
-        skills=request.form.get("skills"),
-        education=request.form.get("education"),
-        experience=request.form.get("experience"),
-        projects=request.form.get("projects"),
-        certificates=request.form.get("certificates")
-    )
-
-    pdf = BytesIO()
-    pisa.CreatePDF(html, dest=pdf)
-
-    response = make_response(pdf.getvalue())
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "attachment; filename=Resume.pdf"
-
-    return response
 
 
 

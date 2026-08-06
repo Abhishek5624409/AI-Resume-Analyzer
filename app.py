@@ -19,7 +19,7 @@ import pdfplumber
 from flask import send_file
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-import mysql.connector
+
 import os
 import psycopg2
 
@@ -36,7 +36,7 @@ import bcrypt
 from flask import Flask, render_template, request, redirect, url_for
 import google.generativeai as genai
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = genai.GenerativeModel("gemini-.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 app = Flask(__name__)
@@ -50,7 +50,7 @@ cursor = conn.cursor()
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS resumes(
-id INT PRIMARY KEY AUTO_INCREMENT,
+id SERIAL PRIMARY KEY,
 name TEXT,
 email TEXT,
 phone TEXT,

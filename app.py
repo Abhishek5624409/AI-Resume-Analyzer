@@ -20,14 +20,15 @@ from flask import send_file
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import mysql.connector
+import os
+import psycopg2
 
-conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-     password="abhishek56242002@#*",   
-    database="resume_db",
-    port=3306
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+conn = psycopg2.connect(DATABASE_URL)
+cursor = conn.cursor()
+
+
 import bcrypt
 
 

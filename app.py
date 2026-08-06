@@ -23,9 +23,12 @@ from reportlab.lib.styles import getSampleStyleSheet
 import os
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-conn = psycopg2.connect(DATABASE_URL)
+if not DATABASE_URL:
+    raise Exception("DATABASE_URL not found!")
+
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
 
 
@@ -46,18 +49,30 @@ app.secret_key="yadav@1234resumebuilder"
 
 cursor = conn.cursor()
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users(
+    id SERIAL PRIMARY KEY,
+    username TEXT,
+    email TEXT UNIQUE,
+    password TEXT
+)
+""")
+conn.commit()
 
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS resumes(
-id SERIAL PRIMARY KEY,
-name TEXT,
-email TEXT,
-phone TEXT,
-score INT,
-ats_score INT)
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    score INT,
+    ats_score INT
+)
 """)
 conn.commit()
+
    
 
 
@@ -91,29 +106,31 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
+        try:
+            username = request.form["name"]
+            email = request.form["email"]
+            password = request.form["password"]
 
-        
-        username = request.form["name"]
-        email = request.form["email"]
-        password = request.form["password"]
+            hashed_password = bcrypt.hashpw(
+                password.encode("utf-8"),
+                bcrypt.gensalt()
+            ).decode("utf-8")
 
-        hashed_password = bcrypt.hashpw(
-        password.encode("utf-8"),
-        bcrypt.gensalt()
-        ).decode("utf-8")
+            cursor.execute(
+                "INSERT INTO users(username, email, password) VALUES(%s, %s, %s)",
+                (username, email, hashed_password)
+            )
 
-        cursor.execute(
-        "INSERT INTO users(username, email, password) VALUES(%s, %s, %s)",
-        (username, email, hashed_password)
-    )
-        conn.commit()
+            conn.commit()
+            return redirect("/login")
 
-        return redirect("/login")
+        except Exception as e:
+            conn.rollback()   
+            print(e)
+            return str(e)
 
     return render_template("register.html")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

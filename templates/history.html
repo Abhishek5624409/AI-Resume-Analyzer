@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    
+    <title>Resume History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+
+        <h2 class="text-center text-primary">Resume History</h2>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card bg-primary text-white p-3">
+                    <h4>Total Resumes</h4>
+                    <h2>{{total_resumes}}</h2>
+            </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-success text-white p-3">
+                    <h4>Average Score</h4>
+                    <h2>{{average_score}}</h2>
+                </div>
+
+            </div>
+        </div>
+
+        <img src="{{ url_for('static', filename='chart.png') }}" class="img-fluid"
+        style="width: 700px; height: 350px;">
+
+        <h3 class="text-center mt-4">Pie chart </h3>
+
+        <img src="{{url_for('static',
+        filename='piechart.png')}}"
+         style="width: 400px; height: 400px;">
+           
+         <div class="table-responsive">
+         
+
+        <table class="table table-bordered table-striped">
+            
+            </div>
+            <tr> 
+                
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Score</th>
+                <th>ATS Score</th>
+                <th>Action</th>
+            </tr>
+
+            {% for row in data %}
+            <tr>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td style="width: 250px;">
+                    <div class="progress">
+                        <div class="progress-bar bg-success"
+                        role="progressbar"
+                        style="width: {{ row[4] }}%;">
+                    {{row[4]}}%
+                </div>
+                    </div>
+                </td>
+                 <td style="width: 250px;">
+                   <div class="progress">
+                        <div class="progress-bar bg-primary"
+                        role="progressbar"
+                        style="width: {{row[5]}};">
+                    {{row[5]}}%
+                        </div>
+                   </div>
+                   </td>
+                <td>
+                    
+    <a href="/download-report/{{row[0]}}"
+       class="btn btn-success btn-sm"
+       style="width:70px; font-size:12px;">
+        📄 PDF
+    </a>
+
+    <a href="/delete/{{row[0]}}"
+       class="btn btn-danger btn-sm"
+       style="width:70px; font-size:12px;">
+        Delete
+    
+                     </td>
+                    
+                 
+             </tr>
+             {%endfor%}
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

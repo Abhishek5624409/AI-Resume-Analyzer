@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Resume</title>
+</head>
+<body>
+
+<h1>Edit Resume</h1>
+
+<form action="/generate-resume" method="POST">
+
+Name<br>
+<input type="text" name="name" value="{{name}}"><br><br>
+
+Email<br>
+<input type="email" name="email" value="{{email}}"><br><br>
+
+Phone<br>
+<input type="text" name="phone" value="{{phone}}"><br><br>
+
+Skills<br>
+<textarea name="skills">{{skills}}</textarea><br><br>
+
+Experience<br>
+<textarea name="experience">{{experience}}</textarea><br><br>
+
+Projects<br>
+<textarea name="projects">{{projects}}</textarea><br><br>
+
+<button type="submit">
+Generate Professional Resume
+</button>
+</form>
+
+<form action="/download-resume" method="POST">
+
+<input type="hidden" name="name" value="{{name}}">
+<input type="hidden" name="email" value="{{email}}">
+<input type="hidden" name="phone" value="{{phone}}">
+<input type="hidden" name="skills" value="{{skills}}">
+<input type="hidden" name="experience" value="{{experience}}">
+<input type="hidden" name="projects" value="{{projects}}">
+
+<button type="submit" class="btn btn-success mt-3">
+    📄 Download Professional Resume
+</button>
+
+</form>
+
+
+
+</body>
+</html>
